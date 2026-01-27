@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import "./index.css";
 
 function App() {
   const [text, setText] = useState("");
@@ -14,7 +15,6 @@ function App() {
       return;
     }
 
-    // Create a new recognition instance
     const recognition = new SpeechRecognition();
     recognitionRef.current = recognition;
 
@@ -42,11 +42,9 @@ function App() {
 
     recognition.onerror = (event) => {
       console.error("Speech recognition error:", event.error);
-
-      // Only restart if the instance is stopped
       if (event.error === "no-speech") {
-        recognition.stop(); // stop current instance first
-        setTimeout(() => startListening(), 500); // restart after short delay
+        recognition.stop();
+        setTimeout(() => startListening(), 500);
       }
     };
 
@@ -63,19 +61,29 @@ function App() {
   };
 
   return (
-    <div style={{ padding: "40px" }}>
-      <h1>Hear Your Voice</h1>
+    <div className="container">
+      <h1> Hear Your Voice</h1>
 
-      <button onClick={startListening} disabled={listening}>
-        {listening ? "🎙 Listening..." : "🎤 Start Listening"}
-      </button>
-      <button onClick={stopListening} disabled={!listening} style={{ marginLeft: "10px" }}>
-        ⏹ Stop Listening
-      </button>
+      <div className="buttons">
+        <button
+          onClick={startListening}
+          disabled={listening}
+          className={`btn ${listening ? "btn-listening" : "btn-start"}`}
+        >
+          {listening ? "🎙 Listening..." : "Start Listening"}
+        </button>
+        <button
+          onClick={stopListening}
+          disabled={!listening}
+          className="btn btn-stop"
+        >
+          Stop Listening
+        </button>
+      </div>
 
-      <p>
-        <b>Transcript:</b> {text}
-      </p>
+      <div className="transcript">
+        {text || <span className="placeholder">Your speech will appear here...</span>}
+      </div>
     </div>
   );
 }
