@@ -29,7 +29,7 @@ const Landing = () => {
           <video src="../src/assets/sample.mp4"></video>
         </div>
 
-        <p className="trust">No sign-up required . Free for personal use</p>
+        <p className="trust">Free for personal use</p>
       </main>
     </div>
   );

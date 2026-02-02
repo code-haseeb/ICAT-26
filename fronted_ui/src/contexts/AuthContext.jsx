@@ -1,0 +1,63 @@
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { auth } from "../firebase";
+import { 
+  onAuthStateChanged, 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword, 
+  signOut,
+  updateProfile
+} from "firebase/auth";
+
+const AuthContext = createContext();
+
+// eslint-disable-next-line react-refresh/only-export-components
+export function useAuth() {
+  return useContext(AuthContext);
+}
+
+export function AuthProvider({ children }) {
+  const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  function signup(email, password, name) {
+    return createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Update profile with display name
+        return updateProfile(userCredential.user, {
+          displayName: name,
+           // You can also add a default photoURL here if you want
+           // photoURL: "https://example.com/default-avatar.png"
+        });
+      });
+  }
+
+  function login(email, password) {
+    return signInWithEmailAndPassword(auth, email, password);
+  }
+
+  function logout() {
+    return signOut(auth);
+  }
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user);
+      setLoading(false);
+    });
+
+    return unsubscribe;
+  }, []);
+
+  const value = {
+    currentUser,
+    signup,
+    login,
+    logout
+  };
+
+  return (
+    <AuthContext.Provider value={value}>
+      {!loading && children}
+    </AuthContext.Provider>
+  );
+}
