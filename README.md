@@ -2,7 +2,7 @@
 
 **Hear Ur Bias** is a web app that helps you spot bias and unprofessional language in your own words. Speak or type text, then get instant feedback on toxicity, sentiment, emotion, and a professionalism score—plus optional AI-powered rephrasing to sound clearer and more professional.
 
-![Alt text](<img width="1319" height="845" alt="app" src="https://github.com/user-attachments/assets/a182e174-e815-4e19-8304-1f48f7b646fc" />)
+![Alt text](./frontend_ui/src/assets/app.png)
 
 ## How to run
 
@@ -31,7 +31,6 @@ npm run dev
 ```bash
 cd fronted_ui
 npm install
-# Optional: .env with VITE_* Firebase and API URL if needed
 npm run dev
 ```
 
