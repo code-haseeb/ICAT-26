@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import AIRephraseDirect from "./AIRephraseDirect";
+import DOMPurify from 'dompurify';
 import "../styles/speechtotext.css";
 
 const SpeechToText = () => {
@@ -79,21 +80,31 @@ const SpeechToText = () => {
   const analyzeText = async () => {
     if (!text) return;
 
+    // Sanitize input before sending
+    const cleanText = DOMPurify.sanitize(text);
+
     setIsChecking(true);
     setAnalysisResult(null);
     setError("");
 
     try {
-      const response = await fetch("http://localhost:5000/analyze", {
+      // Use environment variable for API URL in production
+      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+      const response = await fetch(`${apiUrl}/analyze`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({ text: cleanText }),
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
       const data = await response.json();
       setAnalysisResult(data);
       setRephraseTrigger((prev) => prev + 1);
-    } catch {
+    } catch (err) {
+      console.error(err);
       setError("Failed to analyze text.");
     } finally {
       setIsChecking(false);
